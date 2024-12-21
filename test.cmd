@@ -18,7 +18,8 @@ echo.
 echo - Network reset commands (IP reset, Winsock reset, DNS flush, etc.)
 echo - Run system performance assessment (winsat)
 echo - Upgrade Apps And Repair FPS Issues
-echo - Clear / Clean Extensive Degraiding FPS Cache
+echo - Clear / Clean Extensive Degrading FPS Cache
+echo - Delete cached/pre-stored files, unnecessary files, and empty Recycle Bin
 echo - Please Note This Is Open Source And You Can View Code
 echo.
 echo [1] Run all commands
@@ -71,6 +72,34 @@ echo %TEMP% folder cleaned.
 echo Cleaning Prefetch folder cache...
 del /q /f /s C:\Windows\Prefetch\*
 echo Prefetch folder cache cleaned.
+
+echo Cleaning Windows Update Cache...
+del /q /f /s C:\Windows\SoftwareDistribution\Download\*
+echo Windows Update cache cleaned.
+
+echo Clearing browser caches (if applicable)...
+if exist "%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache" (
+    del /q /f /s "%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache\*"
+    echo Google Chrome cache cleaned.
+)
+if exist "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache" (
+    del /q /f /s "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache\*"
+    echo Microsoft Edge cache cleaned.
+)
+
+if exist "%APPDATA%\Mozilla\Firefox\Profiles" (
+    for /d %%d in ("%APPDATA%\Mozilla\Firefox\Profiles\*") do (
+        del /q /f /s "%%d\cache2\*"
+        echo Firefox cache cleaned for profile %%d.
+    )
+)
+
+echo Emptying Recycle Bin...
+powershell -Command "Clear-RecycleBin -Force"
+echo Recycle Bin emptied.
+
+echo Deleting unnecessary system files...
+cleanmgr /sagerun:1
 
 echo ===================================================
 echo All commands have been executed successfully.
